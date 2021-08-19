@@ -7,6 +7,7 @@ import Progress from "../components/Progress";
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState();
+  const [text, setText] = useState();
   const [images, setImages] = useState([]);
   const [uploadPercentage, setUploadPercentage] = useState(0);
 
@@ -15,12 +16,13 @@ export default function Home() {
   };
 
   const handleImageUpload = async () => {
-    if (!selectedImage) {
+    if (!selectedImage || !text) {
       return;
     }
 
     const formData = new FormData(); //backend expects data in form type
     formData.append("image", selectedImage);
+    formData.append("text", text);
 
     const res = await axios.post(
       "http://localhost:5000/posts/image-upload",
@@ -57,42 +59,52 @@ export default function Home() {
       </Head>
       <Progress percentage={uploadPercentage} />
 
-      <input
-        onChange={handleChange}
-        accept=".jpg, .png, .jpeg"
-        type="file"
-        className="fileInput mb-2"
-      ></input>
-      <div>
-        <button
-          className="btn btn-primary mb-2"
-          disabled={!selectedImage}
-          onClick={handleImageUpload}
-        >
-          Upload
-        </button>
-        <div className="row text-center tex-lg-left">
-          {images
-            ? images.map((image) => (
-                <div
-                  className="col-lg-3 col-md-4 col-6"
-                  key={image.cloudinaryId}
-                >
-                  <a
-                    href={image.url}
-                    target="_blank"
-                    className="d-block mb-4 h-100"
-                  >
-                    <img
-                      className="img-fluid img-thumbnail"
-                      src={image.url}
-                      alt=""
-                    />
-                  </a>
-                </div>
-              ))
-            : "No Images"}
+      <form action="" onSubmit={handleImageUpload}>
+        <input
+          onChange={handleChange}
+          accept=".jpg, .png, .jpeg"
+          type="file"
+          className="fileInput mb-2"
+        ></input>
+        <textarea
+          type="text"
+          name="text"
+          id="post"
+          cols="100"
+          rows="5"
+          autoFocus
+          maxLength="240"
+          placeholder="Post Text..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        ></textarea>
+        <div>
+          <input
+            type="submit"
+            value="Upload"
+            className="btn btn-primary mb-2"
+          />
         </div>
+      </form>
+
+      <div className="row text-center tex-lg-left">
+        {images
+          ? images.map((image) => (
+              <div className="col-lg-3 col-md-4 col-6" key={image.cloudinaryId}>
+                <a
+                  href={image.url}
+                  target="_blank"
+                  className="d-block mb-4 h-100"
+                >
+                  <img
+                    className="img-fluid img-thumbnail"
+                    src={image.url}
+                    alt=""
+                  />
+                </a>
+              </div>
+            ))
+          : "No Images"}
       </div>
     </Container>
   );
