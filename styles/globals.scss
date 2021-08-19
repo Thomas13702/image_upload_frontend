@@ -773,6 +773,9 @@ html {
     color: #777;
     border-top: 0.05rem solid #e5e5e5;
   }
+  .container {
+    display: flex;
+  }
 
   /* Customize container */
   @media (min-width: 48em) {
