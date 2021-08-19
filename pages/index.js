@@ -15,7 +15,8 @@ export default function Home() {
     setSelectedImage(e.target.files[0]);
   };
 
-  const handleImageUpload = async () => {
+  const handleImageUpload = async (e) => {
+    e.preventDefault();
     if (!selectedImage || !text) {
       return;
     }
@@ -37,14 +38,19 @@ export default function Home() {
               Math.round((progressEvent.loaded * 100) / progressEvent.total)
             )
           );
+          console.log(uploadPercentage);
         },
       }
     );
 
     setTimeout(() => setUploadPercentage(0), 10000);
+    console.log(res);
 
     if (res.statusText === "OK") {
       setImages([...images, res.data]);
+      setUploadPercentage(0);
+      setText("");
+      setSelectedImage();
     }
   };
   return (
@@ -101,6 +107,7 @@ export default function Home() {
                     src={image.url}
                     alt=""
                   />
+                  <p>{image.comment}</p>
                 </a>
               </div>
             ))
